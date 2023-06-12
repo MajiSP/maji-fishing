@@ -595,7 +595,7 @@ RegisterNetEvent('giverarefish', function(zone)
         end
     end
 end)
--- arctic smells like shit
+
 function CheckForWorm()
     QBCore.Functions.TriggerCallback('hasWorm', function(hasWorm)
         if hasWorm then
