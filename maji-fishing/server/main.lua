@@ -1,5 +1,20 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
+local allowedBaits = {
+    "worm",
+    "stink",
+    "wiggle",
+    "fly",
+}
+
+local function isAllowedBait(bait)
+    for _, allowedBait in ipairs(allowedBaits) do
+        if bait == allowedBait then
+            return true
+        end
+    end
+    return false
+end
 QBCore.Functions.CreateUseableItem("fishingrod", function(source, item)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
@@ -77,6 +92,9 @@ RegisterServerEvent('givebait', function(bait)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if Player then
+        if not isAllowedBait(bait) then
+            return
+        end
         Player.Functions.AddItem(bait, 1)
         TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[bait], "add")
         TriggerEvent('qb-log:server:CreateLog', 'fishing', 'Received Fish', 'blue', "**"..Player.PlayerData.name .. " (citizenid: "..Player.PlayerData.citizenid.." | id: "..Player.PlayerData.source..")** received 1x "..QBCore.Shared.Items[bait].label)
