@@ -1,11 +1,17 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
+
+--==========================================================================--
+--======== IF YOU ADD OR CHANGE BAIT NAMES, MAKE SURE TO ADD HERE ==========--
+--==========================================================================--
 local allowedBaits = {
     "worm",
     "stink",
     "wiggle",
     "fly",
 }
+
+local allowedFish = {}
 
 local function isAllowedBait(bait)
     for _, allowedBait in ipairs(allowedBaits) do
@@ -15,6 +21,24 @@ local function isAllowedBait(bait)
     end
     return false
 end
+
+for k, v in pairs(Config) do
+    if k ~= "FishingZones" and k ~= "Debug" and k ~= "RareFishChance" and k ~= "FishChance" and k ~= "SuccessUseBaitChance" and k ~= "WaitTimeBeforeCatching" then
+        for _, fish in pairs(v) do
+            table.insert(allowedFish, fish)
+        end
+    end
+end
+
+local function isAllowedFish(randomFish)
+    for _, v in pairs(allowedFish) do
+        if v == randomFish then
+            return true
+        end
+    end
+    return false
+end
+
 QBCore.Functions.CreateUseableItem("fishingrod", function(source, item)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
@@ -93,6 +117,7 @@ RegisterServerEvent('givebait', function(bait)
     local Player = QBCore.Functions.GetPlayer(src)
     if Player then
         if not isAllowedBait(bait) then
+            TriggerEvent('qb-log:server:CreateLog', 'fishing', 'CHEATER DETECTED', 'red', "**"..Player.PlayerData.name .. " (citizenid: "..Player.PlayerData.citizenid.." | id: "..Player.PlayerData.source..")** attempted to spawn: "..QBCore.Shared.Items[bait].label)
             return
         end
         Player.Functions.AddItem(bait, 1)
@@ -105,6 +130,10 @@ RegisterServerEvent('givefish', function(randomFish)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if Player then
+        if not isAllowedFish(randomFish) then
+            TriggerEvent('qb-log:server:CreateLog', 'fishing', 'CHEATER DETECTED', 'red', "**"..Player.PlayerData.name .. " (citizenid: "..Player.PlayerData.citizenid.." | id: "..Player.PlayerData.source..")** attempted to spawn: "..QBCore.Shared.Items[randomFish].label)
+            return
+        end
         Player.Functions.AddItem(randomFish, 1)
         TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[randomFish], "add")
         TriggerEvent('qb-log:server:CreateLog', 'fishing', 'Received Fish', 'blue', "**"..Player.PlayerData.name .. " (citizenid: "..Player.PlayerData.citizenid.." | id: "..Player.PlayerData.source..")** received 1x "..QBCore.Shared.Items[randomFish].label)

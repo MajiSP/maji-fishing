@@ -13,6 +13,31 @@ local src = source
 
 local playerId = GetPlayerServerId(player)
 
+local resourceName = GetCurrentResourceName()
+local version = GetResourceMetadata(resourceName, "version")
+
+local function checkVersion()
+    local url = "https://github.com/PineappleOnMyPizza/maji-fishing/version.txt"
+    PerformHttpRequest(url, function(err, text, headers)
+        if (text ~= nil) then
+            if version == text then
+                print("Resource " .. resourceName .. " is up to date.")
+            else
+                print("\n")
+                print("Newer version of " .. resourceName .. " found")
+                print("[ Current : " .. version .. " ] ")
+                print("[ New     : " .. text .. " ] ")
+                print("Updated   : Security of Code from cheaters.")
+                print("\n")
+            end
+        else
+            print("Error checking version for resource " .. resourceName)
+        end
+    end, "GET", "", {["Content-Type"] = "application/json"})
+end
+
+checkVersion()
+
 RegisterNetEvent('crp-userod', function()
     if rodInHand == 1 then
         if Config.Debug == true then
@@ -595,7 +620,7 @@ RegisterNetEvent('giverarefish', function(zone)
         end
     end
 end)
-
+-- arctic smells like shit
 function CheckForWorm()
     QBCore.Functions.TriggerCallback('hasWorm', function(hasWorm)
         if hasWorm then

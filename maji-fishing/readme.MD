@@ -1,5 +1,11 @@
 # Fishing Script made with OX_LIB 
 
+## Add this to your qb-smallresources/server/logs.lua
+    local Webhooks = {
+        --Your other logs
+        ['fishing'] = '',
+    }
+
 ## Place the images inside your inventory folder
 
 ## Place the items inside your qb-core/shared/items.lua
