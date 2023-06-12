@@ -16,4 +16,4 @@
 
 # if you would like to support me, here is my ko-fi link:
 
-https://ko-fi.com/majidev
+# https://ko-fi.com/majidev
